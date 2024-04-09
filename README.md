@@ -6,7 +6,9 @@ pip install PyQt5-tools
 
 
 
-[演示视频](./doc/play.mp4)
+### 演示
+
+![视频标题](./doc/play.gif)
 
 
 
