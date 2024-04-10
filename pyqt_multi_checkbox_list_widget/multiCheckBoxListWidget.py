@@ -38,7 +38,7 @@ class MultiCheckBoxListWidget(QListWidget):
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(Qt.Unchecked)
             # 将性别和学历信息存储为列表项的自定义数据
-            item.setData(Qt.UserRole, {"gender": gender, "education": education})
+            item.setData(Qt.UserRole, {"name": name, "gender": gender, "education": education})
         super().addItem(item)
 
     # 定义切换列表项选中状态的方法，接收一个state参数
@@ -70,6 +70,20 @@ class MultiCheckBoxListWidget(QListWidget):
             print(item.data(Qt.UserRole))
         print("----------------------------------------")
 
+    # def getCheckedItemsData(self):
+    #     checked_items_data = []
+    #     for i in range(self.count()):
+    #         item = self.item(i)
+    #         if item.checkState() == Qt.Checked:
+    #             # 获取项的文本或关联的自定义数据
+    #             item_data = item.data(Qt.UserRole)  # 如果你存储了自定义数据
+    #             checked_items_data.append(item_data or item.text())
+    #     return checked_items_data
+
+    def uncheckAllRows(self):
+        for i in range(self.count()):
+            item=self.item(i)
+            item.setCheckState(Qt.Unchecked)
 
     def getCheckedRows(self):
         return self.__getFlagRows(Qt.Checked)

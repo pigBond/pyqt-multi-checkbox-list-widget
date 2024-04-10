@@ -3,7 +3,7 @@ import sys
 sys.path.append(os.getcwd())
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QWidget, QApplication
+from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QWidget, QApplication,QPushButton,QMessageBox
 from pyqt_multi_checkbox_list_widget import MultiCheckBoxListWidget
 
 class Widget(QWidget):
@@ -40,10 +40,14 @@ class Widget(QWidget):
         collegeCheckBox = QCheckBox('College')
         highSchoolCheckBox = QCheckBox('High School')
         elementaryCheckBox = QCheckBox('Elementary')
+
+        # 测试输出代码
+        getAllChecked_btn=QPushButton("Get All Checked")
+        unCheckAll_btn=QPushButton("Uncheck ALl")
         
         self.multiCheckBoxListWidget = MultiCheckBoxListWidget()
         # 假设这些是从某个JSON源获取的数据，并已添加了学历信息
-        jsonData = [
+        self.jsonData = [
             {"name": "小红", "gender": "女", "education": "大学"},
             {"name": "小明", "gender": "男", "education": "中学"},
             {"name": "小刚", "gender": "男", "education": "小学"},
@@ -52,8 +56,24 @@ class Widget(QWidget):
             {"name": "小B", "gender": "女", "education": "小学"},
             {"name": "小C", "gender": "男", "education": "大学"}
         ]
-        self.multiCheckBoxListWidget.addItems(jsonData)
+        self.multiCheckBoxListWidget.addItems(self.jsonData)
         
+        
+        def on_button_2_clicked():
+            allCheckBox.setCheckState(Qt.Unchecked)
+            maleCheckBox.setCheckState(Qt.Unchecked)
+            femaleCheckBox.setCheckState(Qt.Unchecked)
+            collegeCheckBox.setCheckState(Qt.Unchecked)
+            highSchoolCheckBox.setCheckState(Qt.Unchecked)
+            elementaryCheckBox.setCheckState(Qt.Unchecked)
+            self.multiCheckBoxListWidget.uncheckAllRows()
+
+        def on_button_clicked():
+            self.confirmAction()
+
+        getAllChecked_btn.clicked.connect(on_button_clicked)
+        unCheckAll_btn.clicked.connect(on_button_2_clicked)
+
         # 连接全选复选框的状态变化信号到相应的槽函数
         allCheckBox.stateChanged.connect(lambda state: self.multiCheckBoxListWidget.toggleState(state))
 
@@ -83,7 +103,23 @@ class Widget(QWidget):
         lay.addWidget(highSchoolCheckBox)
         lay.addWidget(elementaryCheckBox)
         lay.addWidget(self.multiCheckBoxListWidget)
+        lay.addWidget(getAllChecked_btn)
+        lay.addWidget(unCheckAll_btn)
         self.setLayout(lay)
+
+    def getAllChecked_btn_function(self):
+        # checked_data = self.multiCheckBoxListWidget.getCheckedItemsData()
+        checked_data = self.multiCheckBoxListWidget.getCheckedRows()
+        print("Checked items:", checked_data)
+        for i in checked_data:
+            print("-- ",self.jsonData[i])
+
+    def confirmAction(self):
+        reply = QMessageBox.question(self, '确认操作', '是否输出？选择是或否', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.getAllChecked_btn_function()
+        else:
+            print("操作取消")
 
 if __name__ == "__main__":
     import sys
