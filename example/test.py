@@ -11,6 +11,9 @@ from PyQt5.QtWidgets import (
     QApplication,
     QPushButton,
     QMessageBox,
+    QGridLayout,
+    QLabel,
+    QFrame,
 )
 from pyqt_multi_checkbox_list_widget import MultiCheckBoxListWidget
 
@@ -187,19 +190,67 @@ class Widget(QWidget):
         self.multiCheckBoxListWidget.getAllItems()
         
 
+        # # 布局设置
+        # lay = QVBoxLayout()
+        # lay.addWidget(allCheckBox)
+        # for checkBox in algorithmCheckBoxes:
+        #     lay.addWidget(checkBox)
+        # for checkBox in environmentCheckBoxes:
+        #     lay.addWidget(checkBox)
+        # for checkBox in taskCheckBoxes:
+        #     lay.addWidget(checkBox)
+        # lay.addWidget(self.multiCheckBoxListWidget)
+        # lay.addWidget(getAllChecked_btn)
+        # lay.addWidget(unCheckAll_btn)
+        # self.setLayout(lay)
+
         # 布局设置
-        lay = QVBoxLayout()
-        lay.addWidget(allCheckBox)
-        for checkBox in algorithmCheckBoxes:
-            lay.addWidget(checkBox)
-        for checkBox in environmentCheckBoxes:
-            lay.addWidget(checkBox)
-        for checkBox in taskCheckBoxes:
-            lay.addWidget(checkBox)
-        lay.addWidget(self.multiCheckBoxListWidget)
-        lay.addWidget(getAllChecked_btn)
-        lay.addWidget(unCheckAll_btn)
+        lay = QGridLayout()
+        lay.addWidget(allCheckBox, 0, 0, 1, 3)  # 全选复选框跨三列
+
+        self.addSeparator(lay, 1)  # 在全选复选框和算法标签之间添加分界线
+
+        # 为算法复选框添加标签
+        algorithmLabel = QLabel("算法")
+        lay.addWidget(algorithmLabel, 2, 0, 1, 3)  # 标签跨三列
+        self.addCheckBoxesInGrid(algorithmCheckBoxes, lay, 3, 3)  # 算法类开始于第4行
+
+        self.addSeparator(lay, 10)  # 添加分界线
+        # 为环境复选框添加标签
+        environmentLabel = QLabel("环境")
+        lay.addWidget(environmentLabel, 11, 0, 1, 3)  # 标签跨三列
+        self.addCheckBoxesInGrid(environmentCheckBoxes, lay, 12, 3)  # 环境类
+
+        self.addSeparator(lay, 20)  # 再次添加分界线
+        # 为任务复选框添加标签
+        taskLabel = QLabel("任务")
+        lay.addWidget(taskLabel, 21, 0, 1, 3)  # 标签跨三列
+        self.addCheckBoxesInGrid(taskCheckBoxes, lay, 22, 3)  # 任务类
+
+        lay.addWidget(self.multiCheckBoxListWidget, 30, 0, 1, 3)  # 列表控件跨三列
+        lay.addWidget(getAllChecked_btn, 31, 0)
+        lay.addWidget(unCheckAll_btn, 31, 2)
+        
+        # 设置列间的水平间距
+        lay.setHorizontalSpacing(10)  # 这里的10可以根据实际需要进行调整
+        
         self.setLayout(lay)
+
+    def addCheckBoxesInGrid(self, checkBoxes, layout, start_row, items_per_row):
+        row = start_row
+        column = 0
+        for index, checkBox in enumerate(checkBoxes):
+            layout.addWidget(checkBox, row, column)
+            column += 1
+            if (index + 1) % items_per_row == 0:
+                row += 1
+                column = 0
+    
+    def addSeparator(self, layout, row):
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        layout.addWidget(separator, row, 0, 1, 3)  # 分界线跨三列
 
     def getAllChecked_btn_function(self):
         # checked_data = self.multiCheckBoxListWidget.getCheckedItemsData()
